@@ -1,0 +1,867 @@
+openapi: 3.0.0
+info:
+  title: Hotel Booking API
+  description: API RESTful para sistema de reservas de hoteles
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@hotelbooking.com
+
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor de desarrollo
+  - url: https://api.hotelbooking.com/api
+    description: Servidor de producción
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID único del usuario
+        email:
+          type: string
+          format: email
+          description: Email del usuario
+        firstName:
+          type: string
+          description: Nombre del usuario
+        lastName:
+          type: string
+          description: Apellido del usuario
+        phone:
+          type: string
+          description: Teléfono del usuario
+        role:
+          type: string
+          enum: [customer, hotel_admin, admin]
+          description: Rol del usuario
+
+    Hotel:
+      type: object
+      required:
+        - name
+        - description
+        - address
+        - contact
+      properties:
+        _id:
+          type: string
+          description: ID único del hotel
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: Nombre del hotel
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+          description: Descripción del hotel
+        address:
+          type: object
+          required:
+            - street
+            - city
+            - country
+          properties:
+            street:
+              type: string
+              description: Dirección del hotel
+            city:
+              type: string
+              description: Ciudad
+            state:
+              type: string
+              description: Estado/Provincia
+            country:
+              type: string
+              description: País
+            zipCode:
+              type: string
+              description: Código postal
+            coordinates:
+              type: object
+              properties:
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+        images:
+          type: array
+          items:
+            type: string
+          description: URLs de imágenes del hotel
+        amenities:
+          type: array
+          items:
+            type: string
+          description: Amenidades del hotel
+        rating:
+          type: object
+          properties:
+            average:
+              type: number
+              minimum: 1
+              maximum: 5
+              description: Rating promedio
+            totalReviews:
+              type: number
+              description: Número total de reseñas
+        contact:
+          type: object
+          required:
+            - phone
+            - email
+          properties:
+            phone:
+              type: string
+              description: Teléfono de contacto
+            email:
+              type: string
+              format: email
+              description: Email de contacto
+            website:
+              type: string
+              description: Sitio web
+        policies:
+          type: object
+          properties:
+            checkIn:
+              type: string
+              pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+              description: Hora de check-in (HH:MM)
+            checkOut:
+              type: string
+              pattern: '^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+              description: Hora de check-out (HH:MM)
+            cancellation:
+              type: string
+              description: Política de cancelación
+            children:
+              type: string
+              description: Política para niños
+
+    RoomType:
+      type: object
+      required:
+        - hotelId
+        - name
+        - capacity
+        - pricing
+      properties:
+        _id:
+          type: string
+          description: ID único del tipo de habitación
+        hotelId:
+          type: string
+          description: ID del hotel al que pertenece
+        name:
+          type: string
+          description: Nombre del tipo de habitación
+        description:
+          type: string
+          description: Descripción de la habitación
+        capacity:
+          type: object
+          required:
+            - adults
+            - totalGuests
+          properties:
+            adults:
+              type: number
+              minimum: 1
+              description: Capacidad de adultos
+            children:
+              type: number
+              minimum: 0
+              description: Capacidad de niños
+            totalGuests:
+              type: number
+              minimum: 1
+              description: Capacidad total
+        bedConfiguration:
+          type: object
+          properties:
+            singleBeds:
+              type: number
+              minimum: 0
+            doubleBeds:
+              type: number
+              minimum: 0
+            sofaBeds:
+              type: number
+              minimum: 0
+        amenities:
+          type: array
+          items:
+            type: string
+          description: Amenidades de la habitación
+        images:
+          type: array
+          items:
+            type: string
+          description: URLs de imágenes de la habitación
+        pricing:
+          type: object
+          required:
+            - basePrice
+            - currency
+          properties:
+            basePrice:
+              type: number
+              minimum: 0
+              description: Precio base por noche
+            currency:
+              type: string
+              enum: [USD, EUR, BOB]
+              description: Moneda
+            discounts:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum: [early_bird, family, extended_stay]
+                  description:
+                    type: string
+                  percentage:
+                    type: number
+                    minimum: 0
+                    maximum: 100
+
+    Booking:
+      type: object
+      required:
+        - userId
+        - hotelId
+        - roomTypeId
+        - bookingDetails
+        - guestInformation
+      properties:
+        _id:
+          type: string
+          description: ID único de la reserva
+        userId:
+          type: string
+          description: ID del usuario que hace la reserva
+        hotelId:
+          type: string
+          description: ID del hotel
+        roomTypeId:
+          type: string
+          description: ID del tipo de habitación
+        bookingDetails:
+          type: object
+          required:
+            - checkInDate
+            - checkOutDate
+            - nights
+            - guests
+          properties:
+            checkInDate:
+              type: string
+              format: date
+              description: Fecha de entrada
+            checkOutDate:
+              type: string
+              format: date
+              description: Fecha de salida
+            nights:
+              type: number
+              minimum: 1
+              description: Número de noches
+            guests:
+              type: object
+              properties:
+                adults:
+                  type: number
+                  minimum: 1
+                children:
+                  type: number
+                  minimum: 0
+        guestInformation:
+          type: object
+          required:
+            - firstName
+            - lastName
+            - email
+            - phone
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+            specialRequests:
+              type: string
+        pricing:
+          type: object
+          properties:
+            roomPrice:
+              type: number
+              description: Precio por noche
+            totalNights:
+              type: number
+            subtotal:
+              type: number
+            taxes:
+              type: number
+            discounts:
+              type: number
+            totalAmount:
+              type: number
+            currency:
+              type: string
+        status:
+          type: string
+          enum: [pending, confirmed, cancelled, completed, no_show]
+          description: Estado de la reserva
+        confirmationCode:
+          type: string
+          description: Código de confirmación único
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          description: Mensaje de error
+        errors:
+          type: array
+          items:
+            type: object
+          description: Detalles de errores de validación
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Registrar nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - firstName
+                - lastName
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Errores de validación
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Credenciales inválidas
+
+  /hotels:
+    get:
+      tags:
+        - Hotels
+      summary: Obtener todos los hoteles
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: Número de página
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: Elementos por página
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filtrar por ciudad
+        - in: query
+          name: country
+          schema:
+            type: string
+          description: Filtrar por país
+        - in: query
+          name: minRating
+          schema:
+            type: number
+            minimum: 1
+            maximum: 5
+          description: Rating mínimo
+        - in: query
+          name: amenities
+          schema:
+            type: string
+          description: Amenidades separadas por comas
+      responses:
+        '200':
+          description: Lista de hoteles obtenida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Hotel'
+                  pagination:
+                    type: object
+
+    post:
+      tags:
+        - Hotels
+      summary: Crear un nuevo hotel
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+      responses:
+        '201':
+          description: Hotel creado exitosamente
+        '400':
+          description: Errores de validación
+        '401':
+          description: No autorizado
+
+  /hotels/{id}:
+    get:
+      tags:
+        - Hotels
+      summary: Obtener hotel por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID del hotel
+      responses:
+        '200':
+          description: Hotel encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Hotel'
+        '404':
+          description: Hotel no encontrado
+
+    put:
+      tags:
+        - Hotels
+      summary: Actualizar un hotel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hotel'
+      responses:
+        '200':
+          description: Hotel actualizado exitosamente
+        '404':
+          description: Hotel no encontrado
+        '403':
+          description: No autorizado
+
+    delete:
+      tags:
+        - Hotels
+      summary: Eliminar un hotel
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Hotel eliminado exitosamente
+        '404':
+          description: Hotel no encontrado
+        '403':
+          description: No autorizado
+
+  /hotels/search:
+    post:
+      tags:
+        - Hotels
+      summary: Buscar hoteles por criterios específicos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - destination
+                - checkInDate
+                - checkOutDate
+              properties:
+                destination:
+                  type: string
+                  description: Ciudad, estado o país de destino
+                checkInDate:
+                  type: string
+                  format: date
+                  description: Fecha de entrada
+                checkOutDate:
+                  type: string
+                  format: date
+                  description: Fecha de salida
+                guests:
+                  type: object
+                  properties:
+                    adults:
+                      type: integer
+                      minimum: 1
+                      default: 1
+                    children:
+                      type: integer
+                      minimum: 0
+                      default: 0
+                filters:
+                  type: object
+                  properties:
+                    minRating:
+                      type: number
+                      minimum: 1
+                      maximum: 5
+                    maxPrice:
+                      type: number
+                    amenities:
+                      type: array
+                      items:
+                        type: string
+      responses:
+        '200':
+          description: Hoteles encontrados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Hotel'
+                  searchCriteria:
+                    type: object
+
+  /rooms:
+    get:
+      tags:
+        - Rooms
+      summary: Obtener tipos de habitaciones
+      parameters:
+        - in: query
+          name: hotelId
+          schema:
+            type: string
+          description: ID del hotel
+        - in: query
+          name: capacity
+          schema:
+            type: integer
+          description: Capacidad mínima de huéspedes
+      responses:
+        '200':
+          description: Lista de tipos de habitaciones
+
+    post:
+      tags:
+        - Rooms
+      summary: Crear tipo de habitación
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomType'
+      responses:
+        '201':
+          description: Tipo de habitación creado exitosamente
+
+  /rooms/{id}:
+    get:
+      tags:
+        - Rooms
+      summary: Obtener tipo de habitación por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tipo de habitación encontrado
+
+    put:
+      tags:
+        - Rooms
+      summary: Actualizar tipo de habitación
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomType'
+      responses:
+        '200':
+          description: Tipo de habitación actualizado
+
+    delete:
+      tags:
+        - Rooms
+      summary: Eliminar tipo de habitación
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tipo de habitación eliminado
+
+  /bookings:
+    get:
+      tags:
+        - Bookings
+      summary: Obtener reservas del usuario autenticado
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, confirmed, cancelled, completed]
+          description: Filtrar por estado
+      responses:
+        '200':
+          description: Lista de reservas del usuario
+
+    post:
+      tags:
+        - Bookings
+      summary: Crear nueva reserva
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '201':
+          description: Reserva creada exitosamente
+        '400':
+          description: Errores de validación
+        '409':
+          description: No hay disponibilidad
+
+  /bookings/{id}:
+    get:
+      tags:
+        - Bookings
+      summary: Obtener reserva por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reserva encontrada
+        '404':
+          description: Reserva no encontrada
+
+    put:
+      tags:
+        - Bookings
+      summary: Actualizar reserva
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Reserva actualizada
+
+  /bookings/{id}/cancel:
+    patch:
+      tags:
+        - Bookings
+      summary: Cancelar reserva
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Motivo de la cancelación
+      responses:
+        '200':
+          description: Reserva cancelada exitosamente
+        '400':
+          description: No se puede cancelar la reserva
+
+tags:
+  - name: Authentication
+    description: Endpoints de autenticación
+  - name: Hotels
+    description: Gestión de hoteles
+  - name: Rooms
+    description: Gestión de tipos de habitaciones
+  - name: Bookings
+    description: Gestión de reservas
