@@ -23,34 +23,43 @@ const errorHandler = (error, req, res, next) => {
   // Log del error
   logger.error('Error occurred:', {
     message: error.message,
+    stack: error.stack,
     url: req.originalUrl,
-    method: req.method
+    method: req.method,
+    ip: req.ip
   });
 
-  // Determinar status code
+  // Determinar status code y mensaje
   let statusCode = error.statusCode || 500;
-  let message = error.message || 'Something went wrong';
+  let message = error.message || 'Error interno del servidor';
 
   // Manejar errores específicos de MongoDB
   if (error.name === 'ValidationError') {
     statusCode = 400;
-    message = 'Validation failed';
-  } else if (error.name === 'CastError') {
-    statusCode = 400;
-    message = 'Invalid ID format';
-  } else if (error.code === 11000) {
-    statusCode = 409;
-    message = 'Duplicate field value';
+    message = 'Error de validación de datos';
   }
 
-  // Respuesta básica
-  const response = {
+  if (error.name === 'CastError') {
+    statusCode = 400;
+    message = 'ID inválido';
+  }
+
+  if (error.code === 11000) {
+    statusCode = 400;
+    message = 'Datos duplicados';
+  }
+
+  // Respuesta de error
+  const errorResponse = {
     success: false,
     message,
-    ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    ...(process.env.NODE_ENV === 'development' && {
+      error: error.message,
+      stack: error.stack
+    })
   };
 
-  res.status(statusCode).json(response);
+  res.status(statusCode).json(errorResponse);
 };
 
 /**

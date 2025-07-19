@@ -200,10 +200,10 @@ Todos los endpoints de listado incluyen:
 Todas las respuestas siguen el formato:
 ```json
 {
-  "success": boolean,
+  "success": "boolean",
   "message": "string",
-  "data": object|array,
-  "pagination": object // solo en listados
+  "data": "object|array",
+  "pagination": "object // solo en listados"
 }
 ```
 

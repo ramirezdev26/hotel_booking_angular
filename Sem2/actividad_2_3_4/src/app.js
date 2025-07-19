@@ -19,9 +19,9 @@ const __dirname = path.dirname(__filename);
 const swaggerDocument = YAML.load(path.join(__dirname, '../swaggerAPI.yml'));
 
 import {setupRoutes} from './interfaces/routes/index.js';
-import errorHandler from './infraestructure/middleware/errorHandler.js';
+import errorHandler from './infrastructure/middleware/errorHandler.js';
 import logger from './shared/utils/logger.js';
-import connectDB from './infraestructure/database/connection.js';
+import connectDB from './infrastructure/database/connection.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
