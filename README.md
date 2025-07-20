@@ -1,4 +1,4 @@
-# ramirez_santiago_capstone_labs
+# Laboratories
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://gitlab.com/jala-personal/programming-5/ramirez_santiago_capstone_labs.git
+git remote add origin https://gitlab.com/jala-university1/cohort-2/oficial-es-programaci-n-5-cspr-351.ga.t2.25.m1/secci-n-b/santiago-ramirez-cano/laboratories.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://gitlab.com/jala-personal/programming-5/ramirez_santiago_capstone_labs/-/settings/integrations)
+- [ ] [Set up project integrations](https://gitlab.com/jala-university1/cohort-2/oficial-es-programaci-n-5-cspr-351.ga.t2.25.m1/secci-n-b/santiago-ramirez-cano/laboratories/-/settings/integrations)
 
 ## Collaborate with your team
 
