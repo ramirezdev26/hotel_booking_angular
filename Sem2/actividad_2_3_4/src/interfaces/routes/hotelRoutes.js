@@ -10,7 +10,9 @@ import {
   getHotelById,
   updateHotel,
   deleteHotel,
-  searchHotels
+  searchHotels,
+  searchAvailableRooms,
+  quickSearchRooms
 } from '../controllers/hotelController.js';
 
 import {
@@ -59,14 +61,25 @@ router.post('/',
 
 /**
  * @route   POST /api/hotels/search
- * @desc    Buscar hoteles por criterios específicos
+ * @desc    Buscador de habitaciones disponibles (Actividad 4)
  * @access  Public
- * @body    Search criteria según searchHotelsValidator
+ * @body    location, numberOfGuests, priceRange, checkInDate, checkOutDate, amenities, sortBy, page, limit
+ *
+ * Endpoint principal que combina:
+ * - Hoteles por ubicación (ciudad, estado, país)
+ * - Tipos de habitaciones por capacidad (número de personas)
+ * - Filtrado por rango de precios
+ * - Verificación de disponibilidad por fechas
  */
-router.post('/search',
-  validateRequest(searchHotelsValidator, 'body'),
-  searchHotels
-);
+router.post('/search', searchAvailableRooms);
+
+/**
+ * @route   GET /api/hotels/search
+ * @desc    Búsqueda rápida de habitaciones via query parameters
+ * @access  Public
+ * @query   location, numberOfGuests, minPrice, maxPrice, checkInDate, checkOutDate, amenities, sortBy, page, limit
+ */
+router.get('/search/fast', quickSearchRooms);
 
 /**
  * @route   PUT /api/hotels/:id

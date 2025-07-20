@@ -17,10 +17,8 @@ export class HotelUseCases {
    */
   async createHotel(hotelData) {
     try {
-      // Crear instancia de la entidad Hotel
       const hotel = new Hotel(hotelData);
       
-      // Validar la entidad
       const validation = hotel.validate();
       if (!validation.isValid) {
         return {
@@ -29,7 +27,6 @@ export class HotelUseCases {
         };
       }
 
-      // Guardar en el repositorio
       const savedHotel = await this.hotelRepository.create(hotel.toDatabase());
       
       return {
@@ -87,13 +84,11 @@ export class HotelUseCases {
    */
   async getAllHotels(filters = {}, pagination = {}) {
     try {
-      // Configurar paginación por defecto
       const paginationOptions = {
         page: parseInt(pagination.page) || 1,
         limit: parseInt(pagination.limit) || 10
       };
 
-      // Validar límites de paginación
       if (paginationOptions.limit > 50) {
         paginationOptions.limit = 50;
       }
@@ -135,7 +130,6 @@ export class HotelUseCases {
         };
       }
 
-      // Verificar que el hotel existe
       const exists = await this.hotelRepository.exists(id);
       if (!exists) {
         return {
@@ -144,7 +138,6 @@ export class HotelUseCases {
         };
       }
 
-      // Crear instancia temporal para validar datos
       const tempHotel = new Hotel({ ...updateData, id });
       const validation = tempHotel.validate();
       
@@ -155,7 +148,6 @@ export class HotelUseCases {
         };
       }
 
-      // Actualizar timestamp
       updateData.updatedAt = new Date();
 
       const updatedHotel = await this.hotelRepository.update(id, updateData);
@@ -186,7 +178,6 @@ export class HotelUseCases {
         };
       }
 
-      // Verificar que el hotel existe
       const exists = await this.hotelRepository.exists(id);
       if (!exists) {
         return {
@@ -223,33 +214,6 @@ export class HotelUseCases {
    */
   async searchHotels(searchCriteria) {
     try {
-      // Validar criterios de búsqueda requeridos
-      if (!searchCriteria.destination || !searchCriteria.checkInDate || !searchCriteria.checkOutDate) {
-        return {
-          success: false,
-          errors: ['Destino, fecha de entrada y fecha de salida son requeridos']
-        };
-      }
-
-      // Validar fechas
-      const checkIn = new Date(searchCriteria.checkInDate);
-      const checkOut = new Date(searchCriteria.checkOutDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (checkIn < today) {
-        return {
-          success: false,
-          errors: ['La fecha de entrada no puede ser anterior a hoy']
-        };
-      }
-
-      if (checkOut <= checkIn) {
-        return {
-          success: false,
-          errors: ['La fecha de salida debe ser posterior a la fecha de entrada']
-        };
-      }
 
       const hotels = await this.hotelRepository.search(searchCriteria);
       

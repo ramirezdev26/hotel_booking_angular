@@ -53,21 +53,24 @@ class MongoRoomTypeRepository extends RoomTypeRepository {
                 priceRange,
                 amenities,
                 availability = true,
+                capacity,
                 ...otherFilters
             } = filters;
 
             let query = {availability, ...otherFilters};
 
-            // Filtro por rango de precios
             if (priceRange) {
                 query['pricing.basePrice'] = {};
                 if (priceRange.min) query['pricing.basePrice'].$gte = priceRange.min;
                 if (priceRange.max) query['pricing.basePrice'].$lte = priceRange.max;
             }
 
-            // Filtro por amenidades
             if (amenities && amenities.length > 0) {
                 query.amenities = {$all: amenities};
+            }
+
+            if (capacity) {
+                query['capacity.totalGuests'] = {$gte: capacity};
             }
 
             const skip = (page - 1) * limit;
@@ -107,14 +110,12 @@ class MongoRoomTypeRepository extends RoomTypeRepository {
                 ...otherFilters
             } = filters;
 
-            // Build the base query with ObjectId conversion
             const query = {
                 hotelId: new mongoose.Types.ObjectId(hotelId),
                 availability,
                 ...otherFilters
             };
 
-            // Handle pagination and sorting
             const skip = (page - 1) * limit;
             const sort = {[sortBy]: sortOrder === 'desc' ? -1 : 1};
 
@@ -175,10 +176,6 @@ class MongoRoomTypeRepository extends RoomTypeRepository {
                 };
             }
 
-            // Aquí se podría implementar lógica más compleja para verificar
-            // disponibilidad contra reservas existentes
-            // Por ahora, asumimos que está disponible si el room type está activo
-
             return {
                 available: true,
                 roomType: this._mapToEntity(roomType),
@@ -203,14 +200,12 @@ class MongoRoomTypeRepository extends RoomTypeRepository {
                 ...otherFilters
             } = filters;
 
-            // Build query object without pagination parameters
             const query = {
                 'capacity.totalGuests': {$gte: minCapacity},
                 availability,
                 ...otherFilters
             };
 
-            // Apply additional filters
             if (priceRange) {
                 query['pricing.basePrice'] = {};
                 if (priceRange.min) query['pricing.basePrice'].$gte = priceRange.min;
@@ -221,7 +216,6 @@ class MongoRoomTypeRepository extends RoomTypeRepository {
                 query.amenities = {$all: amenities};
             }
 
-            // Handle pagination and sorting separately
             const skip = (page - 1) * limit;
             const sort = {[sortBy]: sortOrder === 'desc' ? -1 : 1};
 
