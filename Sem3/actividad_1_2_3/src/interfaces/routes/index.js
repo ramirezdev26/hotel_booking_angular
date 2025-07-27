@@ -13,24 +13,15 @@ import roomTypeRoutes from './roomTypeRoutes.js';
 /**
  * Función para configurar todas las rutas de la API
  * @param {Express} app - Instancia de la aplicación Express
+ * @param {Object} auth - Middleware de autenticación
  */
-export const setupRoutes = (app) => {
-  // Rutas de autenticación
-  // app.use('/api/auth', authRoutes);
-  //
-  // Rutas de hoteles
-  app.use('/api/hotels', hotelRoutes);
-  //
-  // Rutas de tipos de habitaciones
-  app.use('/api/rooms', roomTypeRoutes);
-  //
-  // // Rutas de reservas
-  // app.use('/api/bookings', bookingRoutes);
-  //
-  // // Rutas de usuarios
-  // app.use('/api/users', userRoutes);
-  //
-  // Health check endpoint
+export const setupRoutes = (app, auth) => {
+  // Ruta para autenticación de Keycloak (login)
+  app.get('/api/auth/login', (req, res) => {
+    res.redirect('/');
+  });
+
+  // Health check endpoint (público)
   app.get('/api/health', (req, res) => {
     res.status(200).json({
       success: true,
@@ -39,6 +30,16 @@ export const setupRoutes = (app) => {
       environment: process.env.NODE_ENV || 'development'
     });
   });
+
+  // Rutas de hoteles - GET endpoints sin protección, otros endpoints protegidos
+  app.use('/api/hotels', hotelRoutes(auth));
+
+  // Rutas de tipos de habitaciones - GET endpoints sin protección, otros endpoints protegidos
+  app.use('/api/rooms', roomTypeRoutes(auth));
+
+  // Otras rutas comentadas por ahora
+  // app.use('/api/bookings', bookingRoutes);
+  // app.use('/api/users', userRoutes);
 };
 
 // Exportación por defecto para compatibilidad
