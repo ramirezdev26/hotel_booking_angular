@@ -14,11 +14,17 @@
     "compile-demo": "tsc src/demo.ts --outDir dist",
     "run-demo": "npm run compile-demo && node dist/demo.js",
     "run-oop-demo": "npm run build && node dist/demo.js",
+    "compile-decorators": "tsc src/decorators-demo.ts --outDir dist",
+    "run-decorators": "npm run compile-decorators && node dist/decorators-demo.js",
+    "run-decorators-demo": "npm run build && node dist/decorators-demo.js",
     "clean": "rm -rf dist"
   },
-  "keywords": ["typescript", "frontend", "hotel-booking", "oop", "inheritance", "interfaces"],
+  "keywords": ["typescript", "frontend", "hotel-booking", "oop", "inheritance", "interfaces", "decorators"],
   "author": "Santiago Ramirez",
   "license": "ISC",
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {
     "typescript": "^5.0.0",
     "@types/node": "^20.0.0"
