@@ -1,0 +1,23 @@
+{
+  "name": "frontend-typescript",
+  "version": "1.0.0",
+  "description": "Frontend TypeScript project for hotel booking application",
+  "main": "dist/hello.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/hello.js",
+    "dev": "tsc --watch",
+    "compile-hello": "tsc src/hello.ts --outDir dist",
+    "run-hello": "npm run compile-hello && node dist/hello.js",
+    "compile-types": "tsc src/types.ts --outDir dist",
+    "run-types": "npm run compile-types && node dist/types.js"
+  },
+  "keywords": ["typescript", "frontend", "hotel-booking"],
+  "author": "Santiago Ramirez",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
+
