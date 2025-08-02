@@ -24,85 +24,91 @@ import {
   validateRequest
 } from '../../shared/validators/hotelValidators.js';
 
-const router = express.Router();
-
 /**
- * @route   GET /api/hotels
- * @desc    Obtener todos los hoteles con filtros y paginación
- * @access  Public
- * @query   page, limit, city, country, minRating, amenities, search, sort
+ * Configuración de rutas de hoteles con autenticación
+ * @param {Object} auth - Middleware de autenticación
+ * @returns {express.Router} Router configurado
  */
-router.get('/',
-  validateRequest(queryHotelsValidator, 'query'),
-  getAllHotels
-);
+const hotelRoutes = (auth) => {
+  const router = express.Router();
 
-/**
- * @route   GET /api/hotels/:id
- * @desc    Obtener hotel específico por ID
- * @access  Public
- * @param   id - ObjectId del hotel
- */
-router.get('/:id',
-  validateRequest(hotelIdValidator, 'params'),
-  getHotelById
-);
+  /**
+   * @route   GET /api/hotels
+   * @desc    Obtener todos los hoteles con filtros y paginación
+   * @access  Public
+   * @query   page, limit, city, country, minRating, amenities, search, sort
+   */
+  router.get('/',
+    validateRequest(queryHotelsValidator, 'query'),
+    getAllHotels
+  );
 
-/**
- * @route   POST /api/hotels
- * @desc    Crear un nuevo hotel
- * @access  Private (requiere autenticación - por implementar)
- * @body    Hotel data según createHotelValidator
- */
-router.post('/',
-  validateRequest(createHotelValidator, 'body'),
-  createHotel
-);
+  /**
+   * @route   GET /api/hotels/:id
+   * @desc    Obtener hotel específico por ID
+   * @access  Public
+   * @param   id - ObjectId del hotel
+   */
+  router.get('/:id',
+    validateRequest(hotelIdValidator, 'params'),
+    getHotelById
+  );
 
-/**
- * @route   POST /api/hotels/search
- * @desc    Buscador de habitaciones disponibles (Actividad 4)
- * @access  Public
- * @body    location, numberOfGuests, priceRange, checkInDate, checkOutDate, amenities, sortBy, page, limit
- *
- * Endpoint principal que combina:
- * - Hoteles por ubicación (ciudad, estado, país)
- * - Tipos de habitaciones por capacidad (número de personas)
- * - Filtrado por rango de precios
- * - Verificación de disponibilidad por fechas
- */
-router.post('/search', searchAvailableRooms);
+  /**
+   * @route   POST /api/hotels
+   * @desc    Crear un nuevo hotel
+   * @access  Private (requiere autenticación)
+   * @body    Hotel data según createHotelValidator
+   */
+  router.post('/',
+    auth.protect(), // Proteger con autenticación
+    validateRequest(createHotelValidator, 'body'),
+    createHotel
+  );
 
-/**
- * @route   GET /api/hotels/search
- * @desc    Búsqueda rápida de habitaciones via query parameters
- * @access  Public
- * @query   location, numberOfGuests, minPrice, maxPrice, checkInDate, checkOutDate, amenities, sortBy, page, limit
- */
-router.get('/search/fast', quickSearchRooms);
+  /**
+   * @route   POST /api/hotels/search
+   * @desc    Buscador de habitaciones disponibles (Actividad 4)
+   * @access  Public
+   * @body    location, numberOfGuests, priceRange, checkInDate, checkOutDate, amenities, sortBy, page, limit
+   */
+  router.post('/search', searchAvailableRooms);
 
-/**
- * @route   PUT /api/hotels/:id
- * @desc    Actualizar hotel completo
- * @access  Private (requiere autenticación y autorización)
- * @param   id - ObjectId del hotel
- * @body    Hotel data según updateHotelValidator
- */
-router.put('/:id',
-  validateRequest(hotelIdValidator, 'params'),
-  validateRequest(updateHotelValidator, 'body'),
-  updateHotel
-);
+  /**
+   * @route   GET /api/hotels/search
+   * @desc    Búsqueda rápida de habitaciones via query parameters
+   * @access  Public
+   * @query   location, numberOfGuests, minPrice, maxPrice, checkInDate, checkOutDate, amenities, sortBy, page, limit
+   */
+  router.get('/search/fast', quickSearchRooms);
 
-/**
- * @route   DELETE /api/hotels/:id
- * @desc    Eliminar hotel (soft delete)
- * @access  Private (requiere autenticación y autorización)
- * @param   id - ObjectId del hotel
- */
-router.delete('/:id',
-  validateRequest(hotelIdValidator, 'params'),
-  deleteHotel
-);
+  /**
+   * @route   PUT /api/hotels/:id
+   * @desc    Actualizar hotel completo
+   * @access  Private (requiere autenticación y autorización)
+   * @param   id - ObjectId del hotel
+   * @body    Hotel data según updateHotelValidator
+   */
+  router.put('/:id',
+    auth.protect(), // Proteger con autenticación
+    validateRequest(hotelIdValidator, 'params'),
+    validateRequest(updateHotelValidator, 'body'),
+    updateHotel
+  );
 
-export default router;
+  /**
+   * @route   DELETE /api/hotels/:id
+   * @desc    Eliminar hotel (soft delete)
+   * @access  Private (requiere autenticación y autorización)
+   * @param   id - ObjectId del hotel
+   */
+  router.delete('/:id',
+    auth.protect(), // Proteger con autenticación
+    validateRequest(hotelIdValidator, 'params'),
+    deleteHotel
+  );
+
+  return router;
+};
+
+export default hotelRoutes;

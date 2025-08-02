@@ -8,6 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 import path from 'path';
 import {fileURLToPath} from 'url';
+import keycloak from "./infrastructure/auth/keycloak.js";
 
 dotenv.config();
 
@@ -22,9 +23,16 @@ import {setupRoutes} from './interfaces/routes/index.js';
 import errorHandler from './infrastructure/middleware/errorHandler.js';
 import logger from './shared/utils/logger.js';
 import connectDB from './infrastructure/database/connection.js';
+import authMiddleware from './infrastructure/middleware/authMiddleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Configurar middleware de autenticación
+app.use(keycloak.middleware());
+
+// Crear instancia del middleware de autenticación
+const auth = authMiddleware(keycloak);
 
 connectDB();
 
@@ -85,7 +93,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Configurar rutas de la API
-setupRoutes(app);
+setupRoutes(app, auth);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -99,12 +107,11 @@ app.use('*', (req, res) => {
             '/api/hotels',
             '/api/rooms',
             '/api/bookings',
-            '/api/users'
         ]
     });
 });
 
-// Error handler
+// Global error handler
 app.use(errorHandler);
 
 // Manejo de errores no capturados
