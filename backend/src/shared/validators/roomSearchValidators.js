@@ -156,16 +156,23 @@ export const processQueryParams = (query) => {
         processed.numberOfGuests = parseInt(processed.numberOfGuests);
     }
 
-    if (processed.minPrice || processed.maxPrice) {
+    if (processed.priceRange.min || processed.priceRange.max) {
         processed.priceRange = {};
-        if (processed.minPrice) {
-            processed.priceRange.min = parseFloat(processed.minPrice);
-            delete processed.minPrice;
+        if (processed.priceRange.min) {
+            processed.priceRange.min = parseFloat(processed.priceRange.min);
+            delete processed.priceRange.min;
         }
-        if (processed.maxPrice) {
-            processed.priceRange.max = parseFloat(processed.maxPrice);
-            delete processed.maxPrice;
+        if (processed.priceRange.max) {
+            processed.priceRange.max = parseFloat(processed.priceRange.max);
+            delete processed.priceRange.max;
         }
+    }
+
+    if (processed.checkInDate) {
+        processed.checkInDate = new Date(processed.checkInDate);
+    }
+    if (processed.checkOutDate) {
+        processed.checkOutDate = new Date(processed.checkOutDate);
     }
 
     if (processed.amenities && typeof processed.amenities === 'string') {
