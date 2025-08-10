@@ -1,0 +1,50 @@
+<mat-card class="hotel-card">
+  <div class="card-image-container">
+    <img mat-card-image [src]="hotel.imageUrl" [alt]="hotel.name" class="hotel-image">
+    <div class="rating-badge">
+      <div class="stars">
+        @for (star of getRatingStars(); track $index) {
+          <mat-icon class="star-icon">{{ star }}</mat-icon>
+        }
+      </div>
+      <span class="rating-text">{{ hotel.rating }}</span>
+    </div>
+  </div>
+
+  <mat-card-header>
+    <mat-card-title>{{ hotel.name }}</mat-card-title>
+    <mat-card-subtitle>
+      <mat-icon class="location-icon">location_on</mat-icon>
+      {{ hotel.location }}
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (hotel.description) {
+      <p class="description">{{ hotel.description }}</p>
+    }
+
+    <div class="amenities">
+      @for (amenity of hotel.amenities.slice(0, 3); track amenity) {
+        <mat-chip-option selected="false">{{ amenity }}</mat-chip-option>
+      }
+      @if (hotel.amenities.length > 3) {
+        <span class="more-amenities">+{{ hotel.amenities.length - 3 }} more</span>
+      }
+    </div>
+
+    <div class="price-section">
+      <span class="price">${{ hotel.pricePerNight }}</span>
+      <span class="price-label">per night</span>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    @if (showBookButton) {
+      <button mat-raised-button color="primary" (click)="onBookHotel()">
+        Book Now
+      </button>
+    }
+    <button mat-button>View Details</button>
+  </mat-card-actions>
+</mat-card>
