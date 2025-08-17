@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/header/header';
 import { FooterComponent } from './shared/footer/footer';
@@ -10,5 +10,5 @@ import { FooterComponent } from './shared/footer/footer';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('Hotel Booking System');
+  title = 'hotel-booking';
 }

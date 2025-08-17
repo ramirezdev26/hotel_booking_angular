@@ -1,45 +1,45 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialog } from '@angular/material/dialog';
-import { LoginComponent, LoginData } from '../login/login';
+import Keycloak  from 'keycloak-js';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule
+  ],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
-export class HeaderComponent {
-  isLoggedIn = false;
-  userName = 'Guest User';
+export class HeaderComponent implements OnInit {
+  private keycloak = inject(Keycloak);
 
-  constructor(private dialog: MatDialog) {}
+  isLoggedIn = false;
+  userName = '';
+
+  ngOnInit() {
+    this.isLoggedIn = this.keycloak.authenticated || false;
+
+    if (this.isLoggedIn) {
+      this.userName = this.keycloak.tokenParsed?.['preferred_username'] || 'Usuario';
+    }
+  }
 
   onLogin() {
-    const dialogRef = this.dialog.open(LoginComponent, {
-      width: '500px',
-      maxWidth: '90vw',
-      disableClose: false,
-      panelClass: 'login-dialog'
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result?.success) {
-        const loginData: LoginData = result.data;
-        this.isLoggedIn = true;
-        this.userName = loginData.username;
-        console.log('User logged in:', loginData);
-      }
-    });
+    this.keycloak.login();
   }
 
   onLogout() {
-    this.isLoggedIn = false;
-    this.userName = 'Guest User';
-    console.log('User logged out');
+    this.keycloak.logout();
   }
 }

@@ -1,48 +1,5 @@
 <footer class="footer">
   <div class="footer-content">
-    <!-- Company Information -->
-    <div class="footer-section">
-      <h3>HotelBooking</h3>
-      <p>Your trusted partner for comfortable hotel stays worldwide.</p>
-    </div>
-
-    <!-- Quick Links -->
-    <div class="footer-section">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Terms of Service</a></li>
-      </ul>
-    </div>
-
-    <!-- Support -->
-    <div class="footer-section">
-      <h4>Support</h4>
-      <ul>
-        <li><a href="#">Help Center</a></li>
-        <li><a href="#">FAQs</a></li>
-        <li><a href="#">Customer Service</a></li>
-        <li><a href="#">Booking Help</a></li>
-      </ul>
-    </div>
-
-    <!-- Social Media -->
-    <div class="footer-section">
-      <h4>Follow Us</h4>
-      <div class="social-links">
-        @for (link of socialLinks; track link.name) {
-          <button mat-icon-button [attr.aria-label]="link.name">
-            <mat-icon>{{ link.icon }}</mat-icon>
-          </button>
-        }
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Bar -->
-  <div class="footer-bottom">
     <p>&copy; {{ currentYear }} HotelBooking. All rights reserved.</p>
   </div>
 </footer>
