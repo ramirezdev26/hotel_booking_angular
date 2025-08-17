@@ -1,0 +1,35 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Find Your Perfect Stay</h1>
+      <p>Discover amazing hotels around the world with the best prices and amenities</p>
+    </div>
+  </section>
+
+  <!-- Featured Hotels Section -->
+  <section class="hotels-section">
+    <div class="section-header">
+      <h2>Featured Hotels</h2>
+      <p>Handpicked accommodations for your next adventure</p>
+    </div>
+
+    <div class="hotels-grid">
+      @for (hotel of hotels; track hotel.id) {
+        <app-hotel-card
+          [hotel]="hotel"
+          [showBookButton]="true"
+          (bookHotel)="onHotelBooked($event)">
+        </app-hotel-card>
+      }
+    </div>
+
+    @if (hotels.length === 0) {
+      <div class="no-hotels">
+        <mat-icon class="large-icon">hotel_class</mat-icon>
+        <h3>No hotels available</h3>
+        <p>Please check back later for available accommodations.</p>
+      </div>
+    }
+  </section>
+</div>

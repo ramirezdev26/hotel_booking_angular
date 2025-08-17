@@ -1,0 +1,45 @@
+<mat-toolbar class="header-toolbar">
+  <div class="header-content">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <mat-icon class="logo-icon">hotel</mat-icon>
+      <span class="logo-text">HotelBooking</span>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="nav-links">
+      <button mat-button>Home</button>
+      <button mat-button>Hotels</button>
+      <button mat-button>About</button>
+    </div>
+
+    <!-- User Actions -->
+    <div class="user-actions">
+      <!-- Login/User Menu -->
+      @if (!isLoggedIn) {
+        <button mat-raised-button color="primary" (click)="onLogin()">
+          Login
+        </button>
+      } @else {
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>person</mat-icon>
+            <span>{{ userName }}</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>book</mat-icon>
+            <span>My Bookings</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="onLogout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      }
+    </div>
+  </div>
+</mat-toolbar>
