@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -35,6 +35,7 @@ export class BookingComponent implements OnInit {
   @Input() hotelId: string = '687bffd29269aba3ee6dfd72';
   @Input() roomTypeId: string = '687bffd29269aba3ee6dfd78';
   @Input() pricePerNight: number = 250;
+  @Output() formStatusChange = new EventEmitter<boolean>();
 
   bookingForm!: FormGroup;
   isSubmitting = false;
@@ -48,13 +49,32 @@ export class BookingComponent implements OnInit {
 
   ngOnInit() {
     this.createForm();
+    this.setupFormChangeDetection();
+  }
+
+  hasUnsavedChanges(): boolean {
+    const formValues = this.bookingForm.value;
+
+    return !!(
+      formValues.guestName?.trim() ||
+      formValues.guestLastName?.trim() ||
+      formValues.guestPhone?.trim() ||
+      formValues.guestEmail?.trim() ||
+      formValues.checkInDate ||
+      formValues.checkOutDate ||
+      (formValues.numberOfGuests && formValues.numberOfGuests !== 1)
+    );
+  }
+
+  canDeactivate(): boolean {
+    return !this.hasUnsavedChanges();
   }
 
   private createForm() {
     this.bookingForm = this.fb.group({
       guestName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       guestLastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      guestPhone: ['', [Validators.required, Validators.pattern(/^[+]?[\d\s\-()]{7,20}$/)]],
+      guestPhone: ['', [Validators.required, Validators.pattern(/^[+]?[\d\s\-\(\)]{7,20}$/)]],
       guestEmail: ['', [Validators.required, Validators.email]],
       checkInDate: ['', Validators.required],
       checkOutDate: ['', Validators.required],
@@ -68,6 +88,16 @@ export class BookingComponent implements OnInit {
     this.bookingForm.get('checkInDate')?.valueChanges.subscribe(() => {
       this.validateDates();
     });
+  }
+
+  private setupFormChangeDetection() {
+    this.bookingForm.valueChanges.subscribe(() => {
+      this.emitFormStatus();
+    });
+  }
+
+  private emitFormStatus() {
+    this.formStatusChange.emit(this.hasUnsavedChanges());
   }
 
   private validateDates() {
@@ -122,12 +152,14 @@ export class BookingComponent implements OnInit {
       this.bookingService.createBooking(bookingData).subscribe({
         next: (response) => {
           this.isSubmitting = false;
+
           this.snackBar.open(
             'Booking created successfully! We will contact you soon.',
             'Close',
             { duration: 5000 }
           );
-          this.bookingForm.reset();
+
+          this.resetForm();
         },
         error: (error) => {
           this.isSubmitting = false;
@@ -142,6 +174,12 @@ export class BookingComponent implements OnInit {
     } else {
       this.markFormGroupTouched();
     }
+  }
+
+  resetForm() {
+    this.bookingForm.reset();
+    this.bookingForm.get('numberOfGuests')?.setValue(1);
+    this.emitFormStatus();
   }
 
   private markFormGroupTouched() {

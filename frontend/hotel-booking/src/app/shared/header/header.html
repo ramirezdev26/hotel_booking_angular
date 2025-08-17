@@ -2,13 +2,23 @@
   <div class="header-container">
     <div class="logo">
       <mat-icon>hotel</mat-icon>
-      <span class="logo-text">HotelBooking</span>
+      <span class="logo-text" routerLink="/home">HotelBooking</span>
     </div>
 
-    <div class="nav-links">
-      <button mat-button color="primary">Home</button>
-      <button mat-button color="primary">Search</button>
-      <button mat-button color="primary">About</button>
+    <!-- Navigation Links -->
+    <div class="navigation">
+      <button mat-button routerLink="/home" routerLinkActive="active">
+        <mat-icon>home</mat-icon>
+        Home
+      </button>
+      <button mat-button routerLink="/search" routerLinkActive="active">
+        <mat-icon>search</mat-icon>
+        Search
+      </button>
+      <button mat-button routerLink="/booking" routerLinkActive="active">
+        <mat-icon>book_online</mat-icon>
+        Book Now
+      </button>
     </div>
 
     <div class="user-actions">
@@ -25,7 +35,7 @@
             <mat-icon>person</mat-icon>
             <span>{{ userName }}</span>
           </button>
-          <button mat-menu-item>
+          <button mat-menu-item routerLink="/my-bookings">
             <mat-icon>book</mat-icon>
             <span>My Bookings</span>
           </button>

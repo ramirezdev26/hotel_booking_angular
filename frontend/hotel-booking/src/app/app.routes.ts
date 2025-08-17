@@ -1,10 +1,17 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home';
-import {BookingComponent} from './shared/booking/booking';
+import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'booking', component: BookingComponent },
-  { path: '**', redirectTo: '' }
+  {
+    path: 'booking',
+    loadComponent: () => import('./shared/booking/booking').then(m => m.BookingComponent),
+    canDeactivate: [unsavedChangesGuard]
+  },
+  {
+    path: '404',
+    loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFoundComponent)
+  },
+  { path: '**', redirectTo: '/404' }
 ];
