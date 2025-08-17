@@ -1,13 +1,13 @@
 <mat-card class="hotel-card">
   <div class="card-image-container">
-    <img mat-card-image [src]="hotel.imageUrl" [alt]="hotel.name" class="hotel-image">
+    <img mat-card-image [src]="getMainImage()" [alt]="hotel.name" class="hotel-image">
     <div class="rating-badge">
       <div class="stars">
         @for (star of getRatingStars(); track $index) {
           <mat-icon class="star-icon">{{ star }}</mat-icon>
         }
       </div>
-      <span class="rating-text">{{ hotel.rating }}</span>
+      <span class="rating-text">{{ hotel.rating.average }}</span>
     </div>
   </div>
 
@@ -15,7 +15,7 @@
     <mat-card-title>{{ hotel.name }}</mat-card-title>
     <mat-card-subtitle>
       <mat-icon class="location-icon">location_on</mat-icon>
-      {{ hotel.location }}
+      {{ getLocation() }}
     </mat-card-subtitle>
   </mat-card-header>
 
@@ -26,16 +26,11 @@
 
     <div class="amenities">
       @for (amenity of hotel.amenities.slice(0, 3); track amenity) {
-        <mat-chip-option selected="false">{{ amenity }}</mat-chip-option>
+        <mat-chip-option selectable="false">{{ amenity }}</mat-chip-option>
       }
       @if (hotel.amenities.length > 3) {
         <span class="more-amenities">+{{ hotel.amenities.length - 3 }} more</span>
       }
-    </div>
-
-    <div class="price-section">
-      <span class="price">${{ hotel.pricePerNight }}</span>
-      <span class="price-label">per night</span>
     </div>
   </mat-card-content>
 
@@ -45,6 +40,5 @@
         Book Now
       </button>
     }
-    <button mat-button>View Details</button>
   </mat-card-actions>
 </mat-card>

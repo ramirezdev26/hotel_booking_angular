@@ -44,6 +44,22 @@ const hotelRoutes = (auth) => {
   );
 
   /**
+   * @route   GET /api/hotels/search
+   * @desc    Buscador de habitaciones disponibles (Actividad 4)
+   * @access  Public
+   * @query   location, numberOfGuests, minPrice, maxPrice, checkInDate, checkOutDate, amenities, sortBy, page, limit
+   */
+  router.get('/search', searchAvailableRooms);
+
+  /**
+   * @route   GET /api/hotels/search/fast
+   * @desc    Búsqueda rápida de habitaciones via query parameters (alias)
+   * @access  Public
+   * @query   location, numberOfGuests, minPrice, maxPrice, checkInDate, checkOutDate, amenities, sortBy, page, limit
+   */
+  router.get('/search/fast', quickSearchRooms);
+
+  /**
    * @route   GET /api/hotels/:id
    * @desc    Obtener hotel específico por ID
    * @access  Public
@@ -65,22 +81,6 @@ const hotelRoutes = (auth) => {
     validateRequest(createHotelValidator, 'body'),
     createHotel
   );
-
-  /**
-   * @route   POST /api/hotels/search
-   * @desc    Buscador de habitaciones disponibles (Actividad 4)
-   * @access  Public
-   * @body    location, numberOfGuests, priceRange, checkInDate, checkOutDate, amenities, sortBy, page, limit
-   */
-  router.post('/search', searchAvailableRooms);
-
-  /**
-   * @route   GET /api/hotels/search
-   * @desc    Búsqueda rápida de habitaciones via query parameters
-   * @access  Public
-   * @query   location, numberOfGuests, minPrice, maxPrice, checkInDate, checkOutDate, amenities, sortBy, page, limit
-   */
-  router.get('/search/fast', quickSearchRooms);
 
   /**
    * @route   PUT /api/hotels/:id
