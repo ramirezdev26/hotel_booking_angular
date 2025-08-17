@@ -1,11 +1,12 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideKeycloak } from 'keycloak-angular';
 
 import { routes } from './app.routes';
 import { provideApiUrl } from './core/provide-api-url';
+import { keycloakTokenInterceptor } from './core/keycloak-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,7 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([keycloakTokenInterceptor])),
     provideApiUrl({ url: 'http://localhost:3000' }),
     provideKeycloak({
       config: {

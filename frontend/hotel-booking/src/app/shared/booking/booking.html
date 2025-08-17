@@ -1,0 +1,122 @@
+<mat-card class="booking-card">
+  <mat-card-header>
+    <mat-card-title>Make a Reservation</mat-card-title>
+    <mat-card-subtitle>Complete your information to confirm the booking</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="booking-form">
+
+      <!-- Guest Information -->
+      <div class="form-section">
+        <h3>Guest Information</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="guestName" placeholder="Enter your first name">
+            @if (bookingForm.get('guestName')?.invalid && bookingForm.get('guestName')?.touched) {
+              <mat-error>{{ getErrorMessage('guestName') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="guestLastName" placeholder="Enter your last name">
+            @if (bookingForm.get('guestLastName')?.invalid && bookingForm.get('guestLastName')?.touched) {
+              <mat-error>{{ getErrorMessage('guestLastName') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contact Phone</mat-label>
+            <input matInput formControlName="guestPhone" placeholder="+1-555-123-4567">
+            @if (bookingForm.get('guestPhone')?.invalid && bookingForm.get('guestPhone')?.touched) {
+              <mat-error>{{ getErrorMessage('guestPhone') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="guestEmail" type="email" placeholder="example@email.com">
+            @if (bookingForm.get('guestEmail')?.invalid && bookingForm.get('guestEmail')?.touched) {
+              <mat-error>{{ getErrorMessage('guestEmail') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Booking Details -->
+      <div class="form-section">
+        <h3>Booking Details</h3>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Check-in Date</mat-label>
+            <input matInput [matDatepicker]="checkInPicker" formControlName="checkInDate" [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="checkInPicker"></mat-datepicker-toggle>
+            <mat-datepicker #checkInPicker></mat-datepicker>
+            @if (bookingForm.get('checkInDate')?.invalid && bookingForm.get('checkInDate')?.touched) {
+              <mat-error>{{ getErrorMessage('checkInDate') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Check-out Date</mat-label>
+            <input matInput [matDatepicker]="checkOutPicker" formControlName="checkOutDate" [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="checkOutPicker"></mat-datepicker-toggle>
+            <mat-datepicker #checkOutPicker></mat-datepicker>
+            @if (bookingForm.get('checkOutDate')?.invalid && bookingForm.get('checkOutDate')?.touched) {
+              <mat-error>{{ getErrorMessage('checkOutDate') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Number of Guests</mat-label>
+            <input matInput type="number" formControlName="numberOfGuests" min="1" max="20">
+            @if (bookingForm.get('numberOfGuests')?.invalid && bookingForm.get('numberOfGuests')?.touched) {
+              <mat-error>{{ getErrorMessage('numberOfGuests') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Price Summary -->
+      @if (getNights() > 0) {
+        <div class="price-summary">
+          <h3>Price Summary</h3>
+          <div class="price-row">
+            <span>{{ getNights() }} night(s) × ${{ pricePerNight }}</span>
+            <span>${{ pricePerNight * getNights() }}</span>
+          </div>
+          <div class="price-total">
+            <span>Total</span>
+            <span>${{ getTotalAmount() }}</span>
+          </div>
+        </div>
+      }
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button type="button" (click)="bookingForm.reset()">
+      Clear
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="bookingForm.invalid || isSubmitting">
+      @if (isSubmitting) {
+        <mat-spinner diameter="20"></mat-spinner>
+        <span>Processing...</span>
+      } @else {
+        <span>Confirm Booking</span>
+      }
+    </button>
+  </mat-card-actions>
+</mat-card>
