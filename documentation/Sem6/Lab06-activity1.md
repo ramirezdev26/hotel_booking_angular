@@ -86,14 +86,7 @@ La API retorna hoteles con la siguiente estructura:
 ✅ **Componentes actualizados** para nueva API  
 ✅ **Datos mostrados**: nombre, ubicación, rating, descripción, amenidades  
 ✅ **Manejo robusto de errores** con recuperación  
-✅ **Arquitectura escalable** siguiendo patrones de las lecciones  
-
-## Patrones Aplicados (Transcripts de Diego Garcia)
-- **Union Types**: Estados discriminados (idle, loading, success, error)
-- **BehaviorSubject**: State management reactivo
-- **Lifecycle Management**: ngOnDestroy() con cleanup
-- **Provider Strategy**: Servicios locales por página
-- **Observable Filtering**: filter() y map() para narrowing
+✅ **Arquitectura escalable** siguiendo patrones de las lecciones
 
 ## Diferencias con Versión Anterior
 1. **Estructura**: `shared/services/hotel.service.ts` → `pages/home/services/home.service.ts`
@@ -107,9 +100,3 @@ La API retorna hoteles con la siguiente estructura:
 - RxJS para reactive programming
 - HttpClient para peticiones HTTP
 - TypeScript con tipos estrictos
-
-## Próximos Pasos
-- Configurar Node.js v22 correctamente
-- Probar integración completa con backend
-- Seguir patrón para futuras páginas (search, bookings, etc.)
-- Implementar filtros y búsqueda avanzada
