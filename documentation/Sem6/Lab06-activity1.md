@@ -1,90 +1,84 @@
 # Lab06 - Actividad #1: Consumo de API - Mostrar Opciones de Hoteles Disponibles
 
 ## Descripción
-Implementación de la integración con la API del backend para obtener y mostrar hoteles disponibles usando componentes Angular dedicados.
+Integración de la API para obtener la lista de hoteles disponibles y mostrarlos en la interfaz de usuario mediante un componente dedicado.
 
 ## Implementación Realizada
 
-### 1. HomeService (`src/app/pages/home/services/home.service.ts`)
-- **Arquitectura**: Patrón de "servicios por página" siguiendo las lecciones del profesor Diego Garcia
-- **State Management**: BehaviorSubject con estados discriminados (idle, loading, success, error)
-- **Observables Reactivos**: `hotels$`, `isLoading$`, `error$`
-- **Lifecycle**: Implementa ngOnDestroy() con cleanup automático
-- **Provider**: Local en el componente (no global)
+### 1. Servicio Angular para Peticiones API
+Se creó el servicio `HomeService` en `pages/home/services/home.service.ts` con:
+- State management reactivo usando BehaviorSubject
+- Observables para hotels$, isLoading$, error$
+- Manejo de errores robusto
+- Patrón de union types para estados
 
-```typescript
-// Ejemplo de uso
-this.hotels$ = this.homeService.hotels$;
-this.isLoading$ = this.homeService.isLoading$;
-this.error$ = this.homeService.error$;
-```
+### 2. Componente de Lista de Hoteles
+Se actualizó `HomeComponent` para:
+- Consumir el servicio de hoteles
+- Mostrar loading states
+- Manejar errores con snackbar
+- Implementar refresh functionality
 
-### 2. Interfaces Actualizadas (`src/app/shared/models/hotel.ts`)
-- **Hotel Interface**: Adaptada para coincidir con la respuesta real de la API
-- **HotelApiResponse**: Interface para respuesta completa con paginación
-- Estructura completa: address, contact, policies, rating, amenities, etc.
+### 3. Componente Hotel Card Actualizado
+Se modificó `HotelCardComponent` para trabajar con la nueva estructura de datos:
+- Interface `Hotel` actualizada según API response
+- Campos mostrados: nombre, ubicación, rating, descripción, amenidades
+- Manejo de imágenes con fallback
+- Rating con estrellas visuales
 
-### 3. Componentes Modificados
+### 4. Manejo de Errores
+- Error boundaries en el servicio
+- UI feedback con Material Snackbar
+- Estados de loading y error en templates
+- Botón "Try Again" para recuperación
 
-#### HotelCardComponent
-- Adaptado para nueva estructura de datos de la API
-- Métodos helper: `getLocation()`, `getMainImage()`
-- Rating usando `hotel.rating.average`
-- Fallback para imágenes faltantes
+## Estructura de Datos API
 
-#### HomeComponent
-- Integración completa con HomeService
-- Estados reactivos con async pipe
-- Manejo de errores con MatSnackBar
-- Loading spinners y mensajes informativos
-
-### 4. Configuración de la Aplicación
-
-#### API Configuration (`src/app/core/`)
-```typescript
-// app.config.ts
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // ...otros providers
-    provideHttpClient(),
-    provideApiUrl({ url: 'http://localhost:3000' })
+La API retorna hoteles con la siguiente estructura:
+```json
+{
+  "success": true,
+  "message": "Hoteles obtenidos exitosamente",
+  "data": [
+    {
+      "id": "687bb53a8a654f8b47dd201b",
+      "name": "Hotel Ejemplo",
+      "description": "Un hermoso hotel...",
+      "address": {
+        "city": "La Paz",
+        "country": "Bolivia"
+      },
+      "rating": {
+        "average": 4.5,
+        "totalReviews": 10
+      },
+      "amenities": ["WiFi", "Pool", "Gym"]
+    }
   ]
-};
+}
 ```
 
-### 5. Templates y Estilos
-- **Home Template**: Estados reactivos, loading/error/success
-- **Hotel Card Template**: Datos derivados con métodos helper
-- **Estilos CSS**: Layout responsive y estados visuales
+## Screenshots
 
-## Arquitectura de Servicios por Página
+### 1. Página Principal con Hoteles Cargados
+![Home Screenshot 1](./screenshots/home-screenshot-1.png)
 
-### Nueva Estructura
-```
-pages/
-├── home/
-│   ├── services/
-│   │   └── home.service.ts    ← Servicio específico para home
-│   └── home.ts                ← Provider local del servicio
-└── [futuras-páginas]/
-    └── services/              ← Servicios específicos por página
-```
+*Vista principal mostrando la lista de hoteles obtenidos desde la API con el hero section y grid de hoteles.*
 
-### Beneficios
-1. **Separación de Responsabilidades**: Cada página maneja su lógica
-2. **Encapsulamiento**: Servicios cerca de donde se usan
-3. **Escalabilidad**: Fácil agregar nuevas páginas
-4. **Mantenimiento**: Lógica específica fácil de encontrar
+### 2. Vista Detallada de Hotel Cards
+![Home Screenshot 2](./screenshots/home-screenshot-2.png)
 
-## Endpoint Utilizado
-- **GET** `http://localhost:3000/api/hotels`
-- **Respuesta**: Lista de hoteles con paginación
-- **Manejo de errores**: Observables de error y notificaciones
+*Detalle de las tarjetas de hoteles mostrando información completa: nombre, ubicación, rating con estrellas, amenidades y botón de reserva.*
 
-## Manejo de Errores
-1. **Servicio**: Estados de error en BehaviorSubject
-2. **Componente**: Suscripción a error$ para snackbars
-3. **UI**: Loading spinners, mensajes de error, botón "Try Again"
+### 3. Estado de Loading
+![Loading Screenshot](screenshots/loading-screenshot.png)
+
+*Durante la carga de datos desde la API, se muestra un spinner de Material Design con mensaje informativo.*
+
+### 4. Manejo de Errores
+![Error Screenshot](./screenshots/error-screenshot.png)
+
+*En caso de error en la API, se muestra un mensaje de error con opción de reintentar la carga.*
 
 ## Características Implementadas
 
@@ -107,7 +101,15 @@ pages/
 3. **Provider**: Global → Local en componente
 4. **Arquitectura**: Patrón "servicios por página"
 
+## Tecnologías Utilizadas
+- Angular 20
+- Angular Material
+- RxJS para reactive programming
+- HttpClient para peticiones HTTP
+- TypeScript con tipos estrictos
+
 ## Próximos Pasos
 - Configurar Node.js v22 correctamente
 - Probar integración completa con backend
 - Seguir patrón para futuras páginas (search, bookings, etc.)
+- Implementar filtros y búsqueda avanzada
