@@ -1,0 +1,72 @@
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Archivos compilados de TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Archivos de caché
+.cache/
+.parcel-cache/
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos del sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos de logs
+logs
+*.log
+
+# Archivos de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos temporales
+.tmp/
+.temp/
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Archivos de testing
+.nyc_output
+
+# Archivos de ESLint
+.eslintcache
+
+# Archivos de Prettier
+.prettierignore
+
+# Archivos de configuración local
+.vscode/settings.json
+
+# Archivos de debugging de TypeScript
+*.tsbuildinfo
+
+# Archivos de source maps (opcional, depende del proyecto)
+*.map
+
+# Archivos de backup
+*.bak
+*.backup

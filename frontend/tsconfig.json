@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    /* Configuraciones básicas */
+    "target": "ES2019",                       /* Cambiado de ES2020 a ES2019 para decorators experimentales */
+    "outDir": "./dist",                       /* Directorio de salida para archivos compilados */
+    "rootDir": "./src",                       /* Directorio raíz de archivos fuente */
+
+    /* Configuraciones de módulos */
+    "module": "commonjs",                     /* Sistema de módulos a utilizar */
+    "moduleResolution": "node",               /* Estrategia de resolución de módulos */
+    "esModuleInterop": true,                  /* Habilita interoperabilidad con módulos ES */
+    "allowSyntheticDefaultImports": true,     /* Permite importaciones por defecto sintéticas */
+
+    /* Configuraciones estrictas */
+    "strict": true,                           /* Habilita todas las verificaciones estrictas */
+    "noImplicitAny": true,                    /* Error en expresiones con tipo 'any' implícito */
+    "strictNullChecks": true,                 /* Verificaciones estrictas de null/undefined */
+    "strictFunctionTypes": true,              /* Verificaciones estrictas de tipos de función */
+    "noImplicitReturns": true,                /* Error en funciones sin return explícito */
+    "noImplicitThis": true,                   /* Error en 'this' con tipo implícito 'any' */
+
+    /* Configuraciones de decorators experimentales */
+    "experimentalDecorators": true,           /* Habilita decorators experimentales */
+    "emitDecoratorMetadata": true,            /* Emite metadata para decorators */
+    "useDefineForClassFields": false,         /* Importante para decorators experimentales */
+
+    /* Configuraciones adicionales */
+    "skipLibCheck": true,                     /* Omite verificación de tipos en archivos de declaración */
+    "forceConsistentCasingInFileNames": true, /* Fuerza nombres de archivo consistentes */
+    "resolveJsonModule": true,                /* Permite importar archivos JSON */
+    "declaration": true,                      /* Genera archivos de declaración .d.ts */
+    "sourceMap": true,                        /* Genera archivos de mapeo fuente */
+    "removeComments": false,                  /* Mantiene comentarios en salida */
+
+    /* Configuraciones de biblioteca */
+    "lib": ["ES2019", "DOM", "DOM.Iterable"]     /* Librerías a incluir en compilación */
+  },
+  "include": [
+    "src/**/*"                                /* Incluye todos los archivos en src */
+  ],
+  "exclude": [
+    "node_modules",                           /* Excluye node_modules */
+    "dist"                                    /* Excluye directorio de salida */
+  ]
+}
