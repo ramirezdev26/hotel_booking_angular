@@ -96,3 +96,25 @@ export class HeaderComponent implements OnInit {
   }
 }
 ```
+
+## Screenshots
+
+### 1. Header con Botón Login (Usuario No Autenticado)
+![Header Login](./screenshots/header-login-screenshot.png)
+
+*Header de la aplicación mostrando el botón "Login" cuando el usuario no está autenticado. El botón está destacado en color primary para llamar la atención.*
+
+### 2. Redirección a Keycloak
+![Keycloak Login Page](./screenshots/keycloak-login-page.png)
+
+*Página de login de Keycloak donde el usuario ingresa sus credenciales. La interfaz es proporcionada completamente por Keycloak.*
+
+### 3. Header con Usuario Autenticado
+![Header Authenticated](./screenshots/header-authenticated-screenshot.png)
+
+*Header mostrando el menú de usuario después de la autenticación exitosa. Se puede ver el ícono de usuario y el menú desplegable con el nombre del usuario.*
+
+### 4. Proceso de Logout
+![Logout Process](./screenshots/logout-process-screenshot.png)
+
+*Confirmación del proceso de logout donde Keycloak cierra la sesión tanto en la aplicación como en el servidor de autenticación.*
