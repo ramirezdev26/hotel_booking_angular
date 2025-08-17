@@ -39,6 +39,14 @@
   }
 }
 
+.date-display {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  border-left: 4px solid #2196f3;
+}
+
 .price-summary {
   background: #f5f5f5;
   border-radius: 8px;
@@ -59,8 +67,12 @@
     font-size: 1.1rem;
     color: #333;
     border-top: 1px solid #ddd;
-    padding-top: 8px;
-    margin-top: 8px;
+  }
+
+  .booking-summary {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
   }
 }
 
@@ -70,9 +82,5 @@ mat-card-actions {
 
   button {
     min-width: 120px;
-
-    mat-spinner {
-      margin-right: 8px;
-    }
   }
 }

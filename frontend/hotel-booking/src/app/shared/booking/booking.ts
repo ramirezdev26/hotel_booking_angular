@@ -9,9 +9,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 
 import { BookingService } from './services/booking.service';
 import { CreateBookingRequest } from '../models/booking';
+import { CanDeactivateComponent } from '../../core/guards/unsaved-changes.guard';
 
 @Component({
   selector: 'app-booking',
@@ -25,7 +27,8 @@ import { CreateBookingRequest } from '../models/booking';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
   ],
   templateUrl: './booking.html',
   styleUrl: './booking.scss',
@@ -40,6 +43,7 @@ export class BookingComponent implements OnInit {
   bookingForm!: FormGroup;
   isSubmitting = false;
   minDate = new Date();
+  currentDate = new Date();
 
   constructor(
     private fb: FormBuilder,
