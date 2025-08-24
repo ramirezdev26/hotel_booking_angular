@@ -3,17 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-
-export interface Hotel {
-  id: number;
-  name: string;
-  location: string;
-  rating: number;
-  imageUrl: string;
-  description?: string;
-  pricePerNight: number;
-  amenities: string[];
-}
+import { Hotel } from '../models/hotel';
 
 @Component({
   selector: 'app-hotel-card',
@@ -24,15 +14,16 @@ export interface Hotel {
 export class HotelCardComponent {
   @Input() hotel!: Hotel;
   @Input() showBookButton: boolean = true;
-  @Output() bookHotel = new EventEmitter<number>();
+  @Output() bookHotel = new EventEmitter<string>();
 
   onBookHotel() {
     this.bookHotel.emit(this.hotel.id);
   }
 
   getRatingStars(): string[] {
-    const fullStars = Math.floor(this.hotel.rating);
-    const hasHalfStar = this.hotel.rating % 1 !== 0;
+    const rating = this.hotel.rating.average;
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
     const stars: string[] = [];
 
     for (let i = 0; i < fullStars; i++) {
@@ -43,11 +34,21 @@ export class HotelCardComponent {
       stars.push('star_half');
     }
 
-    const emptyStars = 5 - Math.ceil(this.hotel.rating);
+    const emptyStars = 5 - Math.ceil(rating);
     for (let i = 0; i < emptyStars; i++) {
       stars.push('star_border');
     }
 
     return stars;
+  }
+
+  getLocation(): string {
+    return `${this.hotel.address.city}, ${this.hotel.address.country}`;
+  }
+
+  getMainImage(): string {
+    return this.hotel.images.length > 0
+      ? this.hotel.images[0]
+      : 'https://via.placeholder.com/300x200?text=Hotel+Image';
   }
 }

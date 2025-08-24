@@ -1,90 +1,76 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { HotelCardComponent, Hotel } from '../../shared/hotel-card/hotel-card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { Observable } from 'rxjs';
+
+import { HotelCardComponent } from '../../shared/hotel-card/hotel-card';
+import { Hotel } from '../../shared/models/hotel';
+import { HomeService } from './services/home.service';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, MatGridListModule, MatButtonModule, MatIconModule, HotelCardComponent],
+  imports: [
+    CommonModule,
+    MatGridListModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    HotelCardComponent
+  ],
   templateUrl: './home.html',
-  styleUrl: './home.scss'
+  styleUrl: './home.scss',
+  providers: [HomeService]
 })
 export class HomeComponent implements OnInit {
-  hotels: Hotel[] = [];
+  hotels$!: Observable<Hotel[]>;
+  isLoading$!: Observable<boolean>;
+  error$!: Observable<Error | null>;
+
+  constructor(
+    private homeService: HomeService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
-    this.loadMockHotels();
-  }
+    this.hotels$ = this.homeService.hotels$;
+    this.isLoading$ = this.homeService.isLoading$;
+    this.error$ = this.homeService.error$;
 
-  onHotelBooked(hotelId: number) {
-    console.log(`Booking hotel with ID: ${hotelId}`);
-    // Here you would typically navigate to booking page or open booking modal
-  }
+    this.loadHotels();
 
-  private loadMockHotels() {
-    this.hotels = [
-      {
-        id: 1,
-        name: 'Grand Plaza Hotel',
-        location: 'New York City, NY',
-        rating: 4.5,
-        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
-        description: 'Luxury hotel in the heart of Manhattan with stunning city views.',
-        pricePerNight: 299,
-        amenities: ['WiFi', 'Pool', 'Gym', 'Spa', 'Restaurant']
-      },
-      {
-        id: 2,
-        name: 'Ocean View Resort',
-        location: 'Miami Beach, FL',
-        rating: 4.8,
-        imageUrl: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=400&h=300&fit=crop',
-        description: 'Beautiful beachfront resort with direct ocean access.',
-        pricePerNight: 189,
-        amenities: ['Beach Access', 'Pool', 'Bar', 'WiFi']
-      },
-      {
-        id: 3,
-        name: 'Mountain Lodge',
-        location: 'Aspen, CO',
-        rating: 4.3,
-        imageUrl: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop',
-        description: 'Cozy mountain retreat perfect for skiing and outdoor activities.',
-        pricePerNight: 249,
-        amenities: ['Ski Access', 'Fireplace', 'WiFi', 'Restaurant']
-      },
-      {
-        id: 4,
-        name: 'City Center Business Hotel',
-        location: 'Chicago, IL',
-        rating: 4.2,
-        imageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop',
-        description: 'Modern business hotel with conference facilities.',
-        pricePerNight: 159,
-        amenities: ['Business Center', 'WiFi', 'Gym', 'Conference Rooms']
-      },
-      {
-        id: 5,
-        name: 'Historic Boutique Inn',
-        location: 'Savannah, GA',
-        rating: 4.6,
-        imageUrl: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=300&fit=crop',
-        description: 'Charming historic hotel in the heart of Savannah\'s historic district.',
-        pricePerNight: 179,
-        amenities: ['Historic Building', 'WiFi', 'Restaurant', 'Garden']
-      },
-      {
-        id: 6,
-        name: 'Desert Oasis Resort',
-        location: 'Scottsdale, AZ',
-        rating: 4.4,
-        imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop',
-        description: 'Luxurious desert resort with world-class spa and golf course.',
-        pricePerNight: 329,
-        amenities: ['Golf Course', 'Spa', 'Pool', 'Desert Views', 'WiFi']
+    this.error$.subscribe(error => {
+      if (error) {
+        this.snackBar.open(
+          'Error al cargar los hoteles. Por favor, intenta de nuevo.',
+          'Cerrar',
+          { duration: 5000 }
+        );
       }
-    ];
+    });
+  }
+
+  onHotelBooked() {
+    this.snackBar.open(
+      'Reservar Hotel',
+      'Cerrar',
+      { duration: 3000 }
+    );
+  }
+
+  private loadHotels() {
+    this.homeService.getHotels().subscribe({
+      error: (error) => {
+        console.error('Error cargando hoteles:', error);
+      }
+    });
+  }
+
+  refreshHotels() {
+    this.loadHotels();
   }
 }

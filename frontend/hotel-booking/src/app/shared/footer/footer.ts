@@ -1,20 +1,13 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-footer',
-  imports: [MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatToolbarModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })
 export class FooterComponent {
   currentYear = new Date().getFullYear();
-
-  socialLinks = [
-    { name: 'Facebook', icon: 'facebook', url: '#' },
-    { name: 'Twitter', icon: 'twitter', url: '#' },
-    { name: 'Instagram', icon: 'instagram', url: '#' },
-    { name: 'LinkedIn', icon: 'linkedin', url: '#' }
-  ];
 }
