@@ -154,9 +154,28 @@ export default class BookingUseCases {
 
       const bookings = await this.bookingRepository.findByGuestEmail(email);
 
+      const enrichedBookings = await Promise.all(
+        bookings.map(async (booking) => {
+          const hotel = await this.hotelRepository.findById(booking.hotelId);
+          const roomType = await this.roomTypeRepository.findById(booking.roomTypeId);
+
+          return {
+            ...booking,
+            hotel: hotel ? {
+              name: hotel.name,
+              address: hotel.address
+            } : null,
+            roomType: roomType ? {
+              name: roomType.name,
+              pricePerNight: roomType.pricePerNight
+            } : null
+          };
+        })
+      );
+
       return {
         success: true,
-        data: bookings,
+        data: enrichedBookings,
         message: `${bookings.length} reservas encontradas`
       };
 

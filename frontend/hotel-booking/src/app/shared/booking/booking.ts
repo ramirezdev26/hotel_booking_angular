@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +11,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import Keycloak from 'keycloak-js';
+import { inject } from '@angular/core';
 
 import { BookingService } from './services/booking.service';
 import { CreateBookingRequest } from '../models/booking';
@@ -35,8 +38,11 @@ import { CanDeactivateComponent } from '../../core/guards/unsaved-changes.guard'
   providers: [BookingService]
 })
 export class BookingComponent implements OnInit {
-  @Input() hotelId: string = '687bffd29269aba3ee6dfd72';
-  @Input() roomTypeId: string = '687bffd29269aba3ee6dfd78';
+  private keycloak = inject(Keycloak);
+  private route = inject(ActivatedRoute);
+
+  @Input() hotelId: string = '';
+  @Input() roomTypeId: string = '';
   @Input() pricePerNight: number = 250;
   @Output() formStatusChange = new EventEmitter<boolean>();
 
@@ -52,8 +58,42 @@ export class BookingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadQueryParams();
     this.createForm();
     this.setupFormChangeDetection();
+    this.prefillUserData();
+  }
+
+  private loadQueryParams() {
+    this.route.queryParams.subscribe(params => {
+      if (params['hotelId']) this.hotelId = params['hotelId'];
+      if (params['roomTypeId']) this.roomTypeId = params['roomTypeId'];
+      if (params['pricePerNight']) this.pricePerNight = Number(params['pricePerNight']);
+
+      if (params['checkInDate'] && params['checkOutDate']) {
+        this.bookingForm?.patchValue({
+          checkInDate: new Date(params['checkInDate']),
+          checkOutDate: new Date(params['checkOutDate'])
+        });
+      }
+
+      if (params['numberOfGuests']) {
+        this.bookingForm?.patchValue({
+          numberOfGuests: Number(params['numberOfGuests'])
+        });
+      }
+    });
+  }
+
+  private prefillUserData() {
+    if (this.keycloak.authenticated) {
+      const userInfo = this.keycloak.tokenParsed;
+      this.bookingForm?.patchValue({
+        guestEmail: userInfo?.['email'] || '',
+        guestName: userInfo?.['given_name'] || '',
+        guestLastName: userInfo?.['family_name'] || ''
+      });
+    }
   }
 
   hasUnsavedChanges(): boolean {
