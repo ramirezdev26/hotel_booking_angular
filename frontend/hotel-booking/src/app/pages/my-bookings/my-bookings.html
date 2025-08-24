@@ -1,0 +1,38 @@
+<div class="my-bookings-container">
+  <div class="bookings-header">
+    <h1>My Bookings</h1>
+    <p>Manage your hotel reservations</p>
+  </div>
+
+  @if (isLoading$ | async) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading your bookings...</p>
+    </div>
+  } @else {
+    @if (bookings$ | async; as bookings) {
+      @if (bookings.length > 0) {
+        <div class="bookings-grid">
+          @for (booking of bookings; track booking.id) {
+            <app-booking-card
+              [booking]="booking"
+              (cancelBooking)="onCancelBooking($event)">
+            </app-booking-card>
+          }
+        </div>
+      } @else {
+        @if (hasLoaded$ | async) {
+          <div class="no-bookings">
+            <mat-icon>book_online</mat-icon>
+            <h2>No bookings found</h2>
+            <p>You haven't made any reservations yet.</p>
+            <button mat-raised-button color="primary" routerLink="/search">
+              <mat-icon>search</mat-icon>
+              Search Rooms
+            </button>
+          </div>
+        }
+      }
+    }
+  }
+</div>

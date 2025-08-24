@@ -5,7 +5,6 @@
       <span class="logo-text" routerLink="/home">HotelBooking</span>
     </div>
 
-    <!-- Navigation Links -->
     <div class="navigation">
       <button mat-button routerLink="/home" routerLinkActive="active">
         <mat-icon>home</mat-icon>
@@ -15,10 +14,12 @@
         <mat-icon>search</mat-icon>
         Search
       </button>
-      <button mat-button routerLink="/booking" routerLinkActive="active">
-        <mat-icon>book_online</mat-icon>
-        Book Now
-      </button>
+      @if (isLoggedIn) {
+        <button mat-button routerLink="/my-bookings" routerLinkActive="active">
+          <mat-icon>book</mat-icon>
+          My Bookings
+        </button>
+      }
     </div>
 
     <div class="user-actions">

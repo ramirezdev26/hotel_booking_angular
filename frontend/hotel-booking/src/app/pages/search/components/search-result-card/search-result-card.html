@@ -1,0 +1,62 @@
+<mat-card class="search-result-card">
+  <div class="card-image">
+    <img [src]="getMainImage()" [alt]="roomData.hotelName" />
+  </div>
+
+  <mat-card-header>
+    <mat-card-title>{{ roomData.hotelName }}</mat-card-title>
+    <mat-card-subtitle>
+      <mat-icon>location_on</mat-icon>
+      {{ getLocation() }}
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="hotel-rating" *ngIf="roomData.hotelRating">
+      <div class="stars">
+        @for (star of getRatingStars(); track $index) {
+          <mat-icon class="star">{{ star }}</mat-icon>
+        }
+      </div>
+      <span class="rating-text">({{ roomData.hotelRating }}/5)</span>
+    </div>
+
+    <div class="room-info">
+      <div class="room-type">
+        <mat-icon>bed</mat-icon>
+        <span>{{ roomData.roomTypeName }}</span>
+      </div>
+
+      <div class="occupancy">
+        <mat-icon>people</mat-icon>
+        <span>Max {{ roomData.maxOccupancy }} guests</span>
+      </div>
+    </div>
+
+    <div class="pricing-info">
+      <div class="price-per-night">
+        <span class="label">Price per night:</span>
+        <span class="price">${{ roomData.pricePerNight }}</span>
+      </div>
+
+      <div class="total-pricing">
+        <div class="nights">{{ roomData.calculatedPricing.totalNights }} nights</div>
+        <div class="total-price">
+          <span class="label">Total:</span>
+          <span class="price">${{ roomData.calculatedPricing.totalPrice }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onBookRoom()"
+      class="book-button">
+      <mat-icon>book_online</mat-icon>
+      Book Now
+    </button>
+  </mat-card-actions>
+</mat-card>
