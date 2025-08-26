@@ -1,0 +1,60 @@
+.booking-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+
+  mat-card-header {
+    padding: 16px 16px 0;
+  }
+
+  mat-card-content {
+    flex: 1;
+    padding: 16px;
+
+    .booking-details {
+      .room-info,
+      .guest-info {
+        margin-bottom: 16px;
+      }
+
+      .dates-info {
+        margin-bottom: 16px;
+        padding: 12px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+      }
+
+      .pricing-info {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        background-color: #f8f9fa;
+        text-align: center;
+
+        .nights {
+          font-size: 12px;
+          margin-bottom: 8px;
+        }
+
+        .total-amount {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  mat-card-actions {
+    padding: 16px;
+    justify-content: center;
+
+    .cancel-button {
+      padding: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  }
+}

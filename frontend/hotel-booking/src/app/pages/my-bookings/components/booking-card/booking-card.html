@@ -1,0 +1,79 @@
+<mat-card class="booking-card">
+  <mat-card-header>
+    <mat-card-title>{{ booking.hotel?.name || 'Hotel Name Not Available' }}</mat-card-title>
+    <mat-card-subtitle>
+      <mat-icon>location_on</mat-icon>
+      {{ getLocation() }}
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="booking-details">
+      <div class="room-info">
+        <div class="info-item">
+          <mat-icon>bed</mat-icon>
+          <span>{{ booking.roomType?.name || 'Room Type Not Available' }}</span>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>people</mat-icon>
+          <span>{{ booking.numberOfGuests }} guests</span>
+        </div>
+      </div>
+
+      <div class="dates-info">
+        <div class="date-item">
+          <mat-icon>login</mat-icon>
+          <div>
+            <span class="label">Check-in:</span>
+            <span class="date">{{ booking.checkInDate | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <div class="date-item">
+          <mat-icon>logout</mat-icon>
+          <div>
+            <span class="label">Check-out:</span>
+            <span class="date">{{ booking.checkOutDate | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="guest-info">
+        <div class="info-item">
+          <mat-icon>person</mat-icon>
+          <span>{{ booking.guestName }} {{ booking.guestLastName }}</span>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>email</mat-icon>
+          <span>{{ booking.guestEmail }}</span>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>phone</mat-icon>
+          <span>{{ booking.guestPhone }}</span>
+        </div>
+      </div>
+
+      <div class="pricing-info">
+        <div class="nights">{{ getNights() }} nights</div>
+        <div class="total-amount">
+          <span class="label">Total Amount:</span>
+          <span class="amount">${{ booking.totalAmount }}</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="onCancelBooking()"
+      class="cancel-button">
+      <mat-icon>cancel</mat-icon>
+      Cancel Booking
+    </button>
+  </mat-card-actions>
+</mat-card>
