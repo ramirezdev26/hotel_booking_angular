@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { Booking } from '../../../../shared/models/booking';
 
 @Component({
   selector: 'app-cancel-booking-dialog',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     MatDialogModule,
