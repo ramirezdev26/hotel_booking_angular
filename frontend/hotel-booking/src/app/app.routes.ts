@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent)
+  },
   {
     path: 'search',
     loadComponent: () => import('./pages/search/search').then(m => m.SearchComponent)
