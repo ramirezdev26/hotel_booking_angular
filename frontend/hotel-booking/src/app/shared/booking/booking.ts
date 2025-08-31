@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CurrencyPipe, DatePipe} from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -21,7 +21,6 @@ import { CanDeactivateComponent } from '../../core/guards/unsaved-changes.guard'
 @Component({
   selector: 'app-booking',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -31,7 +30,9 @@ import { CanDeactivateComponent } from '../../core/guards/unsaved-changes.guard'
     MatNativeDateModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    DatePipe,
+    CurrencyPipe
   ],
   templateUrl: './booking.html',
   styleUrl: './booking.scss',

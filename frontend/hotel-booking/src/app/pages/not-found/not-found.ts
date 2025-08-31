@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-not-found',
-  imports: [CommonModule, MatButtonModule, MatIconModule, RouterModule],
+  imports: [MatButtonModule, MatIconModule, RouterModule],
   template: `
     <div class="not-found-page">
       <div class="error-content">

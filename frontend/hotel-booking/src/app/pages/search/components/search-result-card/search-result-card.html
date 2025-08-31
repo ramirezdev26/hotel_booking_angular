@@ -12,14 +12,16 @@
   </mat-card-header>
 
   <mat-card-content>
-    <div class="hotel-rating" *ngIf="roomData.hotelRating">
-      <div class="stars">
-        @for (star of getRatingStars(); track $index) {
-          <mat-icon class="star">{{ star }}</mat-icon>
-        }
+    @if (roomData.hotelRating) {
+      <div class="hotel-rating">
+        <div class="stars">
+          @for (star of getRatingStars(); track $index) {
+            <mat-icon class="star">{{ star }}</mat-icon>
+          }
+        </div>
+        <span class="rating-text">({{ roomData.hotelRating }}/5)</span>
       </div>
-      <span class="rating-text">({{ roomData.hotelRating }}/5)</span>
-    </div>
+    }
 
     <div class="room-info">
       <div class="room-type">

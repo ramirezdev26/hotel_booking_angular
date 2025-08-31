@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {AsyncPipe} from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,6 @@ import { CancelBookingDialogComponent } from './components/cancel-booking-dialog
 @Component({
   selector: 'app-my-bookings',
   imports: [
-    CommonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -26,7 +25,8 @@ import { CancelBookingDialogComponent } from './components/cancel-booking-dialog
     MatSnackBarModule,
     MatDialogModule,
     RouterModule,
-    BookingCardComponent
+    BookingCardComponent,
+    AsyncPipe
   ],
   templateUrl: './my-bookings.html',
   styleUrl: './my-bookings.scss',

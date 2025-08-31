@@ -1,17 +1,16 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 
 import { SearchResultItem } from '../../../../shared/models/booking';
+import { DateUtils } from '../../../../core/utils/date.utils';
 
 @Component({
   selector: 'app-search-result-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -29,7 +28,10 @@ export class SearchResultCardComponent {
   }
 
   getLocation(): string {
-    return `${this.roomData.hotelAddress.city}, ${this.roomData.hotelAddress.country}`;
+    return DateUtils.formatLocation(
+      this.roomData.hotelAddress.city,
+      this.roomData.hotelAddress.country
+    );
   }
 
   getRatingStars(): string[] {

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,11 +15,11 @@ import { Observable } from 'rxjs';
 import { SearchService } from './services/search.service';
 import { RoomSearchFilters, SearchResultItem } from '../../shared/models/booking';
 import { SearchResultCardComponent } from './components/search-result-card/search-result-card';
+import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'app-search',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
@@ -31,7 +30,8 @@ import { SearchResultCardComponent } from './components/search-result-card/searc
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    SearchResultCardComponent
+    SearchResultCardComponent,
+    AsyncPipe
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
