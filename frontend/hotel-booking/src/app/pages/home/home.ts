@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {AsyncPipe, CommonModule} from '@angular/common';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,13 +14,13 @@ import { HomeService } from './services/home.service';
 @Component({
   selector: 'app-home',
   imports: [
-    CommonModule,
     MatGridListModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    HotelCardComponent
+    HotelCardComponent,
+    AsyncPipe
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss',

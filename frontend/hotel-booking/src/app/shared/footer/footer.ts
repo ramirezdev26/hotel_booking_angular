@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, MatToolbarModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatToolbarModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })

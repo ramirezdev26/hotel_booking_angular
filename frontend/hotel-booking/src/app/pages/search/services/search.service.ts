@@ -1,48 +1,19 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, filter, map, Observable, tap } from 'rxjs';
-
+import { inject, Injectable } from '@angular/core';
+import { Observable, tap, map } from 'rxjs';
 import { RoomSearchFilters, SearchApiResponse, SearchResultItem, HotelSearchResult } from '../../../shared/models/booking';
 import { API_URL } from '../../../core/api-url-token';
-
-type SearchState =
-  | { status: 'idle' }
-  | { status: 'loading' }
-  | { status: 'success'; results: SearchResultItem[] }
-  | { status: 'error'; error: Error };
+import { BaseStateService } from '../../../core/services/base-state.service';
 
 @Injectable()
-export class SearchService implements OnDestroy {
+export class SearchService extends BaseStateService<SearchResultItem[]> {
   private http = inject(HttpClient);
   private API_URL = inject(API_URL);
-  private searchState$ = new BehaviorSubject<SearchState>({
-    status: 'idle',
-  });
 
-  public searchResults$: Observable<SearchResultItem[]> = this.searchState$
-    .asObservable()
-    .pipe(
-      filter((state) => state.status === 'success'),
-      map((state) => state.results)
-    );
+  // Renamed from searchResults$ to data$ (inherited from BaseStateService)
+  public searchResults$ = this.data$;
 
-  public isLoading$: Observable<boolean> = this.searchState$
-    .asObservable()
-    .pipe(map(({ status }) => status === 'loading'));
-
-  public error$: Observable<Error | null> = this.searchState$
-    .asObservable()
-    .pipe(
-      map((state) => state.status === 'error' ? state.error : null)
-    );
-
-  public hasSearched$: Observable<boolean> = this.searchState$
-    .asObservable()
-    .pipe(map(({ status }) => status !== 'idle'));
-
-  ngOnDestroy(): void {
-    this.searchState$.complete();
-  }
+  public hasSearched$ = this.hasLoaded$; // Use inherited hasLoaded$
 
   searchRooms(filters: RoomSearchFilters): Observable<SearchResultItem[]> {
     const url = `${this.API_URL}/api/hotels/search`;
@@ -63,19 +34,19 @@ export class SearchService implements OnDestroy {
       }
     }
 
-    this.searchState$.next({ status: 'loading' });
+    this.setState({ status: 'loading' });
 
     return this.http.get<SearchApiResponse>(url, { params }).pipe(
       tap({
         next: (response) => {
           const transformedResults = this.transformSearchResults(response.data || []);
-          this.searchState$.next({
+          this.setState({
             status: 'success',
-            results: transformedResults,
+            data: transformedResults,
           });
         },
         error: (error) =>
-          this.searchState$.next({
+          this.setState({
             status: 'error',
             error,
           }),

@@ -19,33 +19,52 @@
     }
 
     @if (error$ | async) {
-      <div class="error-container">
-        <mat-icon >error</mat-icon>
-        <h3>Error loading hotels</h3>
-        <p>We couldn't load the hotels. Please try again.</p>
-        <button mat-raised-button color="primary" (click)="refreshHotels()">
-          Try Again
-        </button>
-      </div>
+      @defer (on idle) {
+        <div class="error-container">
+          <mat-icon>error</mat-icon>
+          <h3>Error loading hotels</h3>
+          <p>We couldn't load the hotels. Please try again.</p>
+          <button mat-raised-button color="primary" (click)="refreshHotels()">
+            Try Again
+          </button>
+        </div>
+      } @placeholder {
+        <div class="error-placeholder">Error occurred</div>
+      }
     }
 
     @if (hotels$ | async; as hotels) {
       <div class="hotels-grid">
         @for (hotel of hotels; track hotel.id) {
-          <app-hotel-card
-            [hotel]="hotel"
-            [showBookButton]="true"
-            (bookHotel)="onHotelBooked()">
-          </app-hotel-card>
+          @defer (on viewport) {
+            <app-hotel-card
+              [hotel]="hotel"
+              [showBookButton]="true"
+              (bookHotel)="onHotelBooked()">
+            </app-hotel-card>
+          } @placeholder {
+            <div class="hotel-skeleton">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+              </div>
+            </div>
+          }
         }
       </div>
 
       @if (hotels.length === 0 && !(isLoading$ | async)) {
-        <div class="no-hotels">
-          <mat-icon class="large-icon">hotel_class</mat-icon>
-          <h3>No hotels available</h3>
-          <p>Please check back later for available accommodations.</p>
-        </div>
+        @defer (on idle) {
+          <div class="no-hotels">
+            <mat-icon class="large-icon">hotel_class</mat-icon>
+            <h3>No hotels available</h3>
+            <p>Please check back later for available accommodations.</p>
+          </div>
+        } @placeholder {
+          <div class="no-hotels-placeholder">No content available</div>
+        }
       }
     }
   </section>
