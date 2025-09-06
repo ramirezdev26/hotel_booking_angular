@@ -1,5 +1,5 @@
-<mat-card class="hotel-card">
-  <div class="card-image-container">
+<article class="hotel-card">
+  <figure class="card-image-container">
     <img mat-card-image [src]="getMainImage()" [alt]="hotel.name" class="hotel-image">
     <div class="rating-badge">
       <div class="stars">
@@ -9,17 +9,21 @@
       </div>
       <span class="rating-text">{{ hotel.rating.average }}</span>
     </div>
-  </div>
+  </figure>
 
-  <mat-card-header>
-    <mat-card-title>{{ hotel.name }}</mat-card-title>
+  <header>
+    <mat-card-title>
+      <h3>{{ hotel.name }}</h3>
+    </mat-card-title>
     <mat-card-subtitle>
-      <mat-icon class="location-icon">location_on</mat-icon>
-      {{ getLocation() }}
+      <address>
+        <mat-icon class="location-icon">location_on</mat-icon>
+        {{ getLocation() }}
+      </address>
     </mat-card-subtitle>
-  </mat-card-header>
+  </header>
 
-  <mat-card-content>
+  <section class="hotel-content">
     @if (hotel.description) {
       <p class="description">{{ hotel.description }}</p>
     }
@@ -32,13 +36,13 @@
         <span class="more-amenities">+{{ hotel.amenities.length - 3 }} more</span>
       }
     </div>
-  </mat-card-content>
+  </section>
 
-  <mat-card-actions align="end">
+  <footer class="hotel-actions" align="end">
     @if (showBookButton) {
       <button mat-raised-button color="primary" (click)="onBookHotel()">
         Book Now
       </button>
     }
-  </mat-card-actions>
-</mat-card>
+  </footer>
+</article>

@@ -1,28 +1,36 @@
-<mat-toolbar color="primary" class="header-toolbar">
+<header class="header-toolbar" color="primary">
   <div class="header-container">
-    <div class="logo">
+    <section class="logo">
       <mat-icon>hotel</mat-icon>
-      <span class="logo-text" routerLink="/home">HotelBooking</span>
-    </div>
+      <h1 class="logo-text" routerLink="/home">HotelBooking</h1>
+    </section>
 
-    <div class="navigation">
-      <button mat-button routerLink="/home" routerLinkActive="active">
-        <mat-icon>home</mat-icon>
-        Home
-      </button>
-      <button mat-button routerLink="/search" routerLinkActive="active">
-        <mat-icon>search</mat-icon>
-        Search
-      </button>
-      @if (isLoggedIn) {
-        <button mat-button routerLink="/my-bookings" routerLinkActive="active">
-          <mat-icon>book</mat-icon>
-          My Bookings
-        </button>
-      }
-    </div>
+    <nav class="navigation">
+      <ul class="nav-links">
+        <li>
+          <button mat-button routerLink="/home" routerLinkActive="active">
+            <mat-icon>home</mat-icon>
+            Home
+          </button>
+        </li>
+        <li>
+          <button mat-button routerLink="/search" routerLinkActive="active">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+        </li>
+        @if (isLoggedIn) {
+          <li>
+            <button mat-button routerLink="/my-bookings" routerLinkActive="active">
+              <mat-icon>book</mat-icon>
+              My Bookings
+            </button>
+          </li>
+        }
+      </ul>
+    </nav>
 
-    <div class="user-actions">
+    <section class="user-actions">
       @if (!isLoggedIn) {
         <button mat-raised-button color="primary" (click)="onLogin()">
           Login
@@ -47,6 +55,6 @@
           </button>
         </mat-menu>
       }
-    </div>
+    </section>
   </div>
-</mat-toolbar>
+</header>
