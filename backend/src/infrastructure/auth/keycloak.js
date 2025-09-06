@@ -8,7 +8,8 @@ const keycloak = new KeycloakConnect(
         "ssl-required": "external",
         "resource": "public-client",
         "public-client": true,
-        "confidential-port": 0
+        "confidential-port": 0,
+        "bearer-only": true
     }
 );
 

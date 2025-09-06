@@ -1,0 +1,66 @@
+.header-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+
+  .logo-text {
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #e3f2fd;
+    }
+  }
+}
+
+.navigation {
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: background-color 0.2s ease;
+
+    &.active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    mat-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

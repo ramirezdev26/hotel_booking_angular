@@ -1,0 +1,155 @@
+<div class="search-container">
+  <div class="search-header">
+    <h1>Search Available Rooms</h1>
+    <p>Find the perfect room for your stay</p>
+  </div>
+
+  <mat-card class="search-form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>search</mat-icon>
+        Search Criteria
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Location</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="location"
+              placeholder="Enter city or location">
+            <mat-icon matPrefix>location_on</mat-icon>
+            @if (searchForm.get('location')?.invalid && searchForm.get('location')?.touched) {
+              <mat-error>{{ getErrorMessage('location') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Number of Guests</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="numberOfGuests"
+              min="1"
+              max="20">
+            <mat-icon matPrefix>people</mat-icon>
+            @if (searchForm.get('numberOfGuests')?.invalid && searchForm.get('numberOfGuests')?.touched) {
+              <mat-error>{{ getErrorMessage('numberOfGuests') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Check-in Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="checkInPicker"
+              formControlName="checkInDate"
+              [min]="minDate">
+            <mat-icon matPrefix>event</mat-icon>
+            <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
+            <mat-datepicker #checkInPicker></mat-datepicker>
+            @if (searchForm.get('checkInDate')?.invalid && searchForm.get('checkInDate')?.touched) {
+              <mat-error>{{ getErrorMessage('checkInDate') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Check-out Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="checkOutPicker"
+              formControlName="checkOutDate"
+              [min]="minDate">
+            <mat-icon matPrefix>event</mat-icon>
+            <mat-datepicker-toggle matSuffix [for]="checkOutPicker"></mat-datepicker-toggle>
+            <mat-datepicker #checkOutPicker></mat-datepicker>
+            @if (searchForm.get('checkOutDate')?.invalid && searchForm.get('checkOutDate')?.touched) {
+              <mat-error>{{ getErrorMessage('checkOutDate') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Min Price (per night)</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="minPrice"
+              min="0">
+            <mat-icon matPrefix>attach_money</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Max Price (per night)</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="maxPrice"
+              min="0">
+            <mat-icon matPrefix>attach_money</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="search-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="searchForm.invalid || (isLoading$ | async)"
+            class="search-button">
+            @if (isLoading$ | async) {
+              <ng-container>
+                <mat-spinner diameter="20"></mat-spinner>
+                Searching...
+              </ng-container>
+            } @else {
+              <ng-container>
+                <mat-icon>search</mat-icon>
+                Search Rooms
+              </ng-container>
+            }
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  @if (hasSearched$ | async) {
+    <div class="search-results">
+      @if (isLoading$ | async) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+          <p>Searching for available rooms...</p>
+        </div>
+      } @else {
+        <h2>Search Results ({{ (searchResults$ | async)?.length || 0 }} found)</h2>
+
+        @if (searchResults$ | async; as results) {
+          @if (results.length > 0) {
+            <div class="results-grid">
+              @for (result of results; track result.roomTypeId) {
+                <app-search-result-card
+                  [roomData]="result"
+                  (bookRoom)="onBookRoom($event)">
+                </app-search-result-card>
+              }
+            </div>
+          } @else {
+            <div class="no-results">
+              <mat-icon>search_off</mat-icon>
+              <p>No rooms available for your search criteria</p>
+              <p>Try adjusting your filters and search again</p>
+            </div>
+          }
+        }
+      }
+    </div>
+  }
+</div>

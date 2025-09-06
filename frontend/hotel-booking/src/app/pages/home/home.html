@@ -1,0 +1,71 @@
+<div class="home-container">
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Find Your Perfect Stay</h1>
+      <p>Discover amazing hotels around the world with the best prices and amenities</p>
+    </div>
+  </section>
+
+  <section class="hotels-section">
+    <div class="section-header">
+      <h2>Featured Hotels</h2>
+    </div>
+
+    @if (isLoading$ | async) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading hotels...</p>
+      </div>
+    }
+
+    @if (error$ | async) {
+      @defer (on idle) {
+        <div class="error-container">
+          <mat-icon>error</mat-icon>
+          <h3>Error loading hotels</h3>
+          <p>We couldn't load the hotels. Please try again.</p>
+          <button mat-raised-button color="primary" (click)="refreshHotels()">
+            Try Again
+          </button>
+        </div>
+      } @placeholder {
+        <div class="error-placeholder">Error occurred</div>
+      }
+    }
+
+    @if (hotels$ | async; as hotels) {
+      <div class="hotels-grid">
+        @for (hotel of hotels; track hotel.id) {
+          @defer (on viewport) {
+            <app-hotel-card
+              [hotel]="hotel"
+              [showBookButton]="true"
+              (bookHotel)="onHotelBooked()">
+            </app-hotel-card>
+          } @placeholder {
+            <div class="hotel-skeleton">
+              <div class="skeleton-image"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      @if (hotels.length === 0 && !(isLoading$ | async)) {
+        @defer (on idle) {
+          <div class="no-hotels">
+            <mat-icon class="large-icon">hotel_class</mat-icon>
+            <h3>No hotels available</h3>
+            <p>Please check back later for available accommodations.</p>
+          </div>
+        } @placeholder {
+          <div class="no-hotels-placeholder">No content available</div>
+        }
+      }
+    }
+  </section>
+</div>
